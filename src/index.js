@@ -8,7 +8,7 @@ const { lightningChart, Themes, AxisTickStrategies, DashedLine, PointShape, Stip
 
 const chart = lightningChart()
     .ChartXY({
-        theme: Themes[new URLSearchParams(window.location.search).get('theme') || 'darkGold'] || undefined,
+        theme: Themes[new URLSearchParams(window.location.search).get('theme') || 'darkGold'] || undefined
     })
     .setTitle('Total revenue and renewal revenue')
 
