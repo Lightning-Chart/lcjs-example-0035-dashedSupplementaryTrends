@@ -2,9 +2,9 @@
  * Example showcasing use of `DashedLine` style in a chart with two time series trends along the same Y axis.
  */
 
-const lcjs = require('@arction/lcjs')
+const lcjs = require('@lightningchart/lcjs')
 
-const { lightningChart, Themes, AxisTickStrategies, DashedLine, PointShape, StipplePatterns } = lcjs
+const { lightningChart, Themes, AxisTickStrategies, DashedLine, PointShape, emptyFill, StipplePatterns } = lcjs
 
 const chart = lightningChart({
             resourcesBaseUrl: new URL(document.head.baseURI).origin + new URL(document.head.baseURI).pathname + 'resources/',
@@ -28,14 +28,16 @@ const axisY = chart
     .setTickStrategy(AxisTickStrategies.Numeric, (ticks) => ticks.setFormattingFunction((euros) => `${(euros / 1000).toFixed(0)} k€`))
 
 const seriesTotalRevenue = chart
-    .addSplineSeries({ pointShape: PointShape.Circle })
+    .addPointLineAreaSeries({ dataPattern: 'ProgressiveX' })
+    .setAreaFillStyle(emptyFill)
+    .setCurvePreprocessing({ type: 'spline' })
     .setName('Total revenue')
-    .setCursorInterpolationEnabled(false)
 
 const seriesRenewalRevenue = chart
-    .addSplineSeries({ pointShape: PointShape.Circle })
+    .addPointLineAreaSeries({ dataPattern: 'ProgressiveX' })
+    .setAreaFillStyle(emptyFill)
+    .setCurvePreprocessing({ type: 'spline' })
     .setName('Renewal revenue')
-    .setCursorInterpolationEnabled(false)
     .setStrokeStyle(
         (stroke) =>
             new DashedLine({
@@ -71,13 +73,7 @@ seriesRenewalRevenue.add([
     { x: new Date(2023, 1, 1).getTime(), y: 62820 },
 ])
 
-// Configure both Axis intervals manually to add some extra space around line series
 axisX.setInterval({
     start: seriesTotalRevenue.getXMin() - 7 * 24 * 60 * 60 * 1000,
     end: seriesTotalRevenue.getXMax() + 7 * 24 * 60 * 60 * 1000,
-})
-
-axisY.setInterval({
-    start: seriesRenewalRevenue.getYMin() - 10000,
-    end: seriesTotalRevenue.getYMax() + 10000,
 })
