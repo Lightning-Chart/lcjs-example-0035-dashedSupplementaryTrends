@@ -10,6 +10,7 @@ const chart = lightningChart({
             resourcesBaseUrl: new URL(document.head.baseURI).origin + new URL(document.head.baseURI).pathname + 'resources/',
         })
     .ChartXY({
+        legend: { visible: false },
         theme: Themes[new URLSearchParams(window.location.search).get('theme') || 'darkGold'] || undefined,
     })
     .setTitle('Total revenue and renewal revenue')
@@ -27,16 +28,10 @@ const axisY = chart
     // Configure Y axis formatting as "100 k€"
     .setTickStrategy(AxisTickStrategies.Numeric, (ticks) => ticks.setFormattingFunction((euros) => `${(euros / 1000).toFixed(0)} k€`))
 
-const seriesTotalRevenue = chart
-    .addPointLineAreaSeries({ dataPattern: 'ProgressiveX' })
-    .setAreaFillStyle(emptyFill)
-    .setCurvePreprocessing({ type: 'spline' })
-    .setName('Total revenue')
+const seriesTotalRevenue = chart.addSplineSeries().setName('Total revenue')
 
 const seriesRenewalRevenue = chart
-    .addPointLineAreaSeries({ dataPattern: 'ProgressiveX' })
-    .setAreaFillStyle(emptyFill)
-    .setCurvePreprocessing({ type: 'spline' })
+    .addSplineSeries()
     .setName('Renewal revenue')
     .setStrokeStyle(
         (stroke) =>
@@ -48,7 +43,7 @@ const seriesRenewalRevenue = chart
             }),
     )
 
-seriesTotalRevenue.add([
+seriesTotalRevenue.appendJSON([
     // NOTE: X coordinates are millisecond timestamps
     { x: new Date(2022, 5, 1).getTime(), y: 80140 },
     { x: new Date(2022, 6, 1).getTime(), y: 102200 },
@@ -61,7 +56,7 @@ seriesTotalRevenue.add([
     { x: new Date(2023, 1, 1).getTime(), y: 88560 },
 ])
 
-seriesRenewalRevenue.add([
+seriesRenewalRevenue.appendJSON([
     { x: new Date(2022, 5, 1).getTime(), y: 36220 },
     { x: new Date(2022, 6, 1).getTime(), y: 40190 },
     { x: new Date(2022, 7, 1).getTime(), y: 44520 },
