@@ -28,10 +28,14 @@ const axisY = chart
     // Configure Y axis formatting as "100 k€"
     .setTickStrategy(AxisTickStrategies.Numeric, (ticks) => ticks.setFormattingFunction((euros) => `${(euros / 1000).toFixed(0)} k€`))
 
-const seriesTotalRevenue = chart.addSplineSeries().setName('Total revenue')
+const seriesTotalRevenue = chart.addSplineSeries(
+    { automaticColorIndex: 4 },
+).setName('Total revenue')
 
 const seriesRenewalRevenue = chart
-    .addSplineSeries()
+    .addSplineSeries(
+        { automaticColorIndex: 1 },
+    )
     .setName('Renewal revenue')
     .setStrokeStyle(
         (stroke) =>
@@ -71,4 +75,9 @@ seriesRenewalRevenue.appendJSON([
 axisX.setInterval({
     start: seriesTotalRevenue.getXMin() - 7 * 24 * 60 * 60 * 1000,
     end: seriesTotalRevenue.getXMax() + 7 * 24 * 60 * 60 * 1000,
+})
+
+axisY.setInterval({
+    start: seriesRenewalRevenue.getYMin() * 0.95,
+    end: seriesTotalRevenue.getYMax() * 1.025,
 })
